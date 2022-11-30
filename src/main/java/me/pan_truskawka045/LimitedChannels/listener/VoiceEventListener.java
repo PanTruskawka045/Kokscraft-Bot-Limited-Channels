@@ -56,18 +56,27 @@ public class VoiceEventListener {
 
     private void sortChannels(Category category){
         List<VoiceChannel> channels = category.getVoiceChannels();
+        List<VoiceChannel> emptyChannels = category.getVoiceChannels();
         channels.sort(Comparator.comparing(VoiceChannel::getId));
         channels.removeIf(channel -> {
             boolean empty = channel.getMembers().isEmpty();
             if(empty){
-                channel.delete().queue();
+                emptyChannels.add(channel);
             }
             return empty;
         });
+        if(emptyChannels.size() > 1){
+            for (int i = 1; i < emptyChannels.size(); i++) {
+                emptyChannels.get(i).delete().queue();
+            }
+        }
+        if(!emptyChannels.isEmpty()){
+            channels.add(emptyChannels.get(0));
+        }
         ChannelConfig channelConfig = limitedChannelsConfig.getChannels().get(category.getIdLong());
         for (int i = 0; i < channels.size(); i++) {
             VoiceChannel channel = channels.get(i);
-            channel.getManager().setPosition(i)
+            channel.getManager().setPosition(i).setUserLimit(channelConfig.getLimit())
                     .setName(channelConfig.getName().replace("{{index}}", String.valueOf(i+1))).queue();
         }
     }
