@@ -39,8 +39,7 @@ public class VoiceEventListener {
 
     @EventHandler(event = Event.GUILD_MEMBER_VOICE_LEAVE)
     private void onVoiceLeave(
-            @ContextParam AudioChannel channel,
-            @ContextParam Member member
+            @ContextParam AudioChannel channel
     ) {
         channel.getMembers().forEach(m1 -> System.out.println(m1.getEffectiveName()));
         if (!(channel instanceof VoiceChannel)) return;
@@ -68,7 +67,7 @@ public class VoiceEventListener {
                 return;
             }
         }
-        onVoiceLeave(left, member);
+        onVoiceLeave(left);
         onVoiceJoin(joined, member);
     }
 
@@ -85,31 +84,20 @@ public class VoiceEventListener {
         });
         VoiceChannel emptyChannel = null;
         ChannelConfig channelConfig = limitedChannelsConfig.getChannels().get(category.getIdLong());
-        if (emptyChannels.isEmpty()) {
-//            VoiceChannel channel = category.createVoiceChannel(channelConfig.getName()).complete();
-//            System.out.println(channel.getPosition());
-//            channels.add(channel);
-//            emptyChannels.add(channel);
-//        } else if (emptyChannels.size() == 1) {
-//            emptyChannel = emptyChannels.get(0);
-//        } else {
-//            for (int i = 0; i < emptyChannels.size()-1; i++) {
-//                emptyChannels.get(i).delete().queue();
-//            }
-//            emptyChannel = emptyChannels.get(emptyChannels.size()-1);
-//        }
-        } else {
-            //TODO Zrobić to jakoś normalnie
-            for (int i = 0; i < emptyChannels.size(); i++) {
-                emptyChannels.get(i).delete().queue();
+        if (!emptyChannels.isEmpty()) {
+            VoiceChannel voiceChannel = category.getVoiceChannels().stream().max(Comparator.comparing(VoiceChannel::getPosition)).orElse(null);
+            if (voiceChannel != null && voiceChannel.getMembers().isEmpty()) {
+                emptyChannel = voiceChannel;
+
+            }
+
+            for (VoiceChannel channel : emptyChannels) {
+                if (emptyChannel == null || channel.getIdLong() != emptyChannel.getIdLong()) {
+                    channel.delete().queue();
+                }
             }
         }
 
-//        for (int i = 0; i < channels.size(); i++) {
-//            VoiceChannel channel = channels.get(i);
-//            channel.getManager().setPosition(i + 1).setUserLimit(channelConfig.getLimit())
-//                    .setName(channelConfig.getName().replace("{{index}}", String.valueOf(i + 1))).queue();
-//        }
         if (emptyChannel != null) {
             int maxPosition = 0;
             for (VoiceChannel channel : channels) {
