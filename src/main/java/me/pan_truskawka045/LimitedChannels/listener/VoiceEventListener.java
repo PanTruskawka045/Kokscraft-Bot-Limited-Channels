@@ -7,10 +7,10 @@ import me.pan_truskawka045.AnnotationCore.annotation.file.GlobalConfig;
 import me.pan_truskawka045.AnnotationCore.event.Event;
 import me.pan_truskawka045.LimitedChannels.model.ChannelConfig;
 import me.pan_truskawka045.LimitedChannels.model.LimitedChannelsConfig;
-import net.dv8tion.jda.api.entities.AudioChannel;
-import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 
 import java.util.ArrayList;
 import java.util.Comparator;
