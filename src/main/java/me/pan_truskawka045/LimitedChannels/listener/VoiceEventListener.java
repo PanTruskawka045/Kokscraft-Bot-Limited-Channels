@@ -41,7 +41,6 @@ public class VoiceEventListener {
     private void onVoiceLeave(
             @ContextParam AudioChannel channel
     ) {
-        channel.getMembers().forEach(m1 -> System.out.println(m1.getEffectiveName()));
         if (!(channel instanceof VoiceChannel)) return;
         VoiceChannel voiceChannel = (VoiceChannel) channel;
         if (!voiceChannel.getMembers().isEmpty()) return;
@@ -84,6 +83,7 @@ public class VoiceEventListener {
         });
         VoiceChannel emptyChannel = null;
         ChannelConfig channelConfig = limitedChannelsConfig.getChannels().get(category.getIdLong());
+        if(channelConfig == null) return;
         if (!emptyChannels.isEmpty()) {
             VoiceChannel voiceChannel = category.getVoiceChannels().stream().max(Comparator.comparing(VoiceChannel::getPosition)).orElse(null);
             if (voiceChannel != null && voiceChannel.getMembers().isEmpty()) {
