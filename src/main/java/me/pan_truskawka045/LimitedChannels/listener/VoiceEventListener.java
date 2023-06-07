@@ -83,7 +83,7 @@ public class VoiceEventListener {
         });
         VoiceChannel emptyChannel = null;
         ChannelConfig channelConfig = limitedChannelsConfig.getChannels().get(category.getIdLong());
-        if(channelConfig == null) return;
+        if (channelConfig == null) return;
         if (!emptyChannels.isEmpty()) {
             VoiceChannel voiceChannel = category.getVoiceChannels().stream().max(Comparator.comparing(VoiceChannel::getPosition)).orElse(null);
             if (voiceChannel != null && voiceChannel.getMembers().isEmpty()) {
